@@ -3544,7 +3544,7 @@ int BotSetupMoveAI(void)
 	weapindex_rocketlauncher = LibVar("weapindex_rocketlauncher", "5");
 	weapindex_bfg10k = LibVar("weapindex_bfg10k", "9");
 	weapindex_grapple = LibVar("weapindex_grapple", "10");
-	entitytypemissile = LibVar("entitytypemissile", "3");
+	entitytypemissile = LibVar("entitytypemissile", "5");
 	offhandgrapple = LibVar("offhandgrapple", "0");
 	cmd_grappleon = LibVar("cmd_grappleon", "grappleon");
 	cmd_grappleoff = LibVar("cmd_grappleoff", "grappleoff");

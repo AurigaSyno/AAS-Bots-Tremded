@@ -48,11 +48,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 //FIXME: these might change
 enum {
-	ET_GENERAL,
-	ET_PLAYER,
-	ET_ITEM,
-	ET_MISSILE,
-	ET_MOVER
+  ET_GENERAL,
+  ET_PLAYER,
+  ET_ITEM,
+
+  ET_BUILDABLE,       //Unused, but set enum to match with tremulous.
+
+  ET_MISSILE,
+  ET_MOVER,
 };
 
 //===========================================================================

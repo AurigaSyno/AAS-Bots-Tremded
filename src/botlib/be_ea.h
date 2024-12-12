@@ -46,6 +46,7 @@ void EA_MoveBack(int client);
 void EA_MoveLeft(int client);
 void EA_MoveRight(int client);
 void EA_Attack(int client);
+void EA_Attack2(int client);
 void EA_Respawn(int client);
 void EA_Talk(int client);
 void EA_Gesture(int client);

@@ -104,7 +104,7 @@ typedef struct directive_s
 
 #define TOKEN_HEAP_SIZE		4096
 
-int numtokens;
+int numTokens;
 /*
 int tokenheapinitialized;				//true when the token heap is initialized
 token_t token_heap[TOKEN_HEAP_SIZE];	//heap with tokens
@@ -112,7 +112,7 @@ token_t *freetokens;					//free tokens from the heap
 */
 
 //list with global defines added to every source loaded
-define_t *globaldefines;
+define_t *globalDefines;
 
 //============================================================================
 //
@@ -273,7 +273,7 @@ token_t *PC_CopyToken(token_t *token)
 //	freetokens = freetokens->next;
 	Com_Memcpy(t, token, sizeof(token_t));
 	t->next = NULL;
-	numtokens++;
+	numTokens++;
 	return t;
 } //end of the function PC_CopyToken
 //============================================================================
@@ -288,7 +288,7 @@ void PC_FreeToken(token_t *token)
 	FreeMemory(token);
 //	token->next = freetokens;
 //	freetokens = token;
-	numtokens--;
+	numTokens--;
 } //end of the function PC_FreeToken
 //============================================================================
 //
@@ -1400,8 +1400,8 @@ int PC_AddGlobalDefine(char *string)
 
 	define = PC_DefineFromString(string);
 	if (!define) return qfalse;
-	define->next = globaldefines;
-	globaldefines = define;
+	define->next = globalDefines;
+	globalDefines = define;
 	return qtrue;
 } //end of the function PC_AddGlobalDefine
 //============================================================================
@@ -1415,7 +1415,7 @@ int PC_RemoveGlobalDefine(char *name)
 {
 	define_t *define;
 
-	define = PC_FindDefine(globaldefines, name);
+	define = PC_FindDefine(globalDefines, name);
 	if (define)
 	{
 		PC_FreeDefine(define);
@@ -1434,9 +1434,9 @@ void PC_RemoveAllGlobalDefines(void)
 {
 	define_t *define;
 
-	for (define = globaldefines; define; define = globaldefines)
+	for (define = globalDefines; define; define = globalDefines)
 	{
-		globaldefines = globaldefines->next;
+		globalDefines = globalDefines->next;
 		PC_FreeDefine(define);
 	} //end for
 } //end of the function PC_RemoveAllGlobalDefines
@@ -1493,7 +1493,7 @@ void PC_AddGlobalDefinesToSource(source_t *source)
 {
 	define_t *define, *newdefine;
 
-	for (define = globaldefines; define; define = define->next)
+	for (define = globalDefines; define; define = define->next)
 	{
 		newdefine = PC_CopyDefine(source, define);
 #if DEFINEHASHING
@@ -3114,7 +3114,7 @@ void FreeSource(source_t *source)
 
 #define MAX_SOURCEFILES		64
 
-source_t *sourceFiles[MAX_SOURCEFILES];
+source_t *sourceFilesPC[MAX_SOURCEFILES];
 
 int PC_LoadSourceHandle(const char *filename)
 {
@@ -3123,7 +3123,7 @@ int PC_LoadSourceHandle(const char *filename)
 
 	for (i = 1; i < MAX_SOURCEFILES; i++)
 	{
-		if (!sourceFiles[i])
+		if (!sourceFilesPC[i])
 			break;
 	} //end for
 	if (i >= MAX_SOURCEFILES)
@@ -3132,7 +3132,7 @@ int PC_LoadSourceHandle(const char *filename)
 	source = LoadSourceFile(filename);
 	if (!source)
 		return 0;
-	sourceFiles[i] = source;
+	sourceFilesPC[i] = source;
 	return i;
 } //end of the function PC_LoadSourceHandle
 //============================================================================
@@ -3145,11 +3145,11 @@ int PC_FreeSourceHandle(int handle)
 {
 	if (handle < 1 || handle >= MAX_SOURCEFILES)
 		return qfalse;
-	if (!sourceFiles[handle])
+	if (!sourceFilesPC[handle])
 		return qfalse;
 
-	FreeSource(sourceFiles[handle]);
-	sourceFiles[handle] = NULL;
+	FreeSource(sourceFilesPC[handle]);
+	sourceFilesPC[handle] = NULL;
 	return qtrue;
 } //end of the function PC_FreeSourceHandle
 //============================================================================
@@ -3165,10 +3165,10 @@ int PC_ReadTokenHandle(int handle, pc_token_t *pc_token)
 
 	if (handle < 1 || handle >= MAX_SOURCEFILES)
 		return 0;
-	if (!sourceFiles[handle])
+	if (!sourceFilesPC[handle])
 		return 0;
 
-	ret = PC_ReadToken(sourceFiles[handle], &token);
+	ret = PC_ReadToken(sourceFilesPC[handle], &token);
 	strcpy(pc_token->string, token.string);
 	pc_token->type = token.type;
 	pc_token->subtype = token.subtype;
@@ -3188,12 +3188,12 @@ int PC_SourceFileAndLine(int handle, char *filename, int *line)
 {
 	if (handle < 1 || handle >= MAX_SOURCEFILES)
 		return qfalse;
-	if (!sourceFiles[handle])
+	if (!sourceFilesPC[handle])
 		return qfalse;
 
-	strcpy(filename, sourceFiles[handle]->filename);
-	if (sourceFiles[handle]->scriptstack)
-		*line = sourceFiles[handle]->scriptstack->line;
+	strcpy(filename, sourceFilesPC[handle]->filename);
+	if (sourceFilesPC[handle]->scriptstack)
+		*line = sourceFilesPC[handle]->scriptstack->line;
 	else
 		*line = 0;
 	return qtrue;
@@ -3220,10 +3220,10 @@ void PC_CheckOpenSourceHandles(void)
 
 	for (i = 1; i < MAX_SOURCEFILES; i++)
 	{
-		if (sourceFiles[i])
+		if (sourceFilesPC[i])
 		{
 #ifdef BOTLIB
-			botimport.Print(PRT_ERROR, "file %s still open in precompiler\n", sourceFiles[i]->scriptstack->filename);
+			botimport.Print(PRT_ERROR, "file %s still open in precompiler\n", sourceFilesPC[i]->scriptstack->filename);
 #endif	//BOTLIB
 		} //end if
 	} //end for

@@ -732,6 +732,7 @@ static void Init_EA_Export( ea_export_t *ea ) {
 	ea->EA_Gesture = EA_Gesture;
 	ea->EA_Talk = EA_Talk;
 	ea->EA_Attack = EA_Attack;
+	ea->EA_Attack2 = EA_Attack2;
 	ea->EA_Use = EA_Use;
 	ea->EA_Respawn = EA_Respawn;
 	ea->EA_Crouch = EA_Crouch;

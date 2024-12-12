@@ -137,6 +137,7 @@ struct fileHandleData_t {
     int zipFilePos;
     int zipFileLen;
     bool zipFile;
+    qboolean	streamed;
     char name[MAX_ZPATH];
 
     void close();
@@ -1152,6 +1153,7 @@ long FS_FOpenFileReadDir(
                         && !FS_IsExt(filename, ".config", len)
                         && !FS_IsExt(filename, ".arena", len)
                         && !FS_IsExt(filename, ".menu", len)
+                        && !FS_IsExt(filename, ".aas", len)
                         && !strstr(filename, "levelshots") )
                 {
                     pak->referenced |= FS_GENERAL_REF;
@@ -1415,6 +1417,25 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, i
     }
 
     return -1;
+}
+
+int FS_Read2( void *buffer, int len, fileHandle_t f ) {
+	if ( !fs_searchpaths ) {
+		Com_Error( ERR_FATAL, "Filesystem call made without initialization\n" );
+	}
+
+	if ( !f ) {
+		return 0;
+	}
+	if (fsh[f].streamed) {
+		int r;
+		fsh[f].streamed = qfalse;
+		r = FS_Read( buffer, len, f);
+		fsh[f].streamed = qtrue;
+		return r;
+	} else {
+		return FS_Read( buffer, len, f);
+	}
 }
 
 int FS_Read(void *buffer, int len, fileHandle_t f)

@@ -172,6 +172,20 @@ void EA_Attack(int client)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
+void EA_Attack2(int client)
+{
+	bot_input_t *bi;
+
+	bi = &botinputs[client];
+
+	bi->actionflags |= ACTION_ATTACK2;
+} //end of the function EA_Attack2
+//===========================================================================
+//
+// Parameter:			-
+// Returns:				-
+// Changes Globals:		-
+//===========================================================================
 void EA_Talk(int client)
 {
 	bot_input_t *bi;
